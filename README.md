@@ -2,7 +2,9 @@
 
 # Quickies
 1) this.state.persons.map((person, index)) in this case index will show us the index of each person
-2)
+2)Error boundary to use when an error might happen to a component
+3) Can refactor the code by segragating components like <Persons> but be sure to pass props of states, and functions.
+4)
 
 # Chunks
 
@@ -135,5 +137,18 @@ Removing a component or list based on its index
 
  
   }
+
+```
+
+To pass props
+```
+<Persons persons={this.state.persons}
+                   clicked={this.deletePersonHandler} ></Persons>
+
+```
+
+Dynamic classes allocation
+```
+
 
 ```

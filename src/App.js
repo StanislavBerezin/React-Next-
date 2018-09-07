@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import Person from './Person'
-
+import Persons from './Persons'
+import Cockpit from './Cockpit'
 
 
 class App extends Component {
@@ -38,35 +38,23 @@ class App extends Component {
          
         <div>
             {/* map returns a new array, index is gien for free */}
-          {this.state.persons.map((person, index) =>{
-                return <Person 
-                            // because its an arrow function we can use index
-
-                            click={()=>this.deletePersonHandler(index)}
-                            name={person.name}
-                            age={person.age}
-                            // because react does comparisions of virtual and dom and current dom
-                            // so it helps to know what exactly to update
-                            
-                            key ={person.id}/>
-          })}
+          <Persons persons={this.state.persons}
+                   clicked={this.deletePersonHandler} ></Persons>
           <h1>Secret content</h1>
         </div> 
       )
       style.backgroundColor = "red"
     }
-    
-    let classes = ['red', 'bold'].join(' ');
+    // binds "red bold"
+    let classes = ['red'];
 
     return (
       <div className="App">
-        <button style={style}
-        onClick={ this.togglePersonsHandler}>
-          Switch
-        </button>
-        <p className={classes}> Welcome to this </p>
-        
-       {persons}
+       <Cockpit
+        persons={this.state.persons}
+        clicked={this.togglePersonsHandler}></Cockpit>
+        {persons}
+       
          
 
         
