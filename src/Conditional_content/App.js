@@ -28,9 +28,6 @@ class App extends Component {
         this.setState({persons: persons})
   }
   render() {
-    const style = {
-        backgroundColor:"green"
-    }
     let persons = null
 
     if(this.state.showPersons){
@@ -53,18 +50,13 @@ class App extends Component {
           <h1>Secret content</h1>
         </div> 
       )
-      style.backgroundColor = "red"
     }
-    
-    let classes = ['red', 'bold'].join(' ');
-
     return (
       <div className="App">
-        <button style={style}
+        <button
         onClick={ this.togglePersonsHandler}>
           Switch
         </button>
-        <p className={classes}> Welcome to this </p>
         
        {persons}
          
