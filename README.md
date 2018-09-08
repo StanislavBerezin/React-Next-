@@ -4,7 +4,7 @@
 1) this.state.persons.map((person, index)) in this case index will show us the index of each person
 2)Error boundary to use when an error might happen to a component
 3) Can refactor the code by segragating components like <Persons> but be sure to pass props of states, and functions.
-4)
+4)Statefull (class App extends component), Stateless (const xy = (props)=>{}). 
 
 # Chunks
 
