@@ -195,7 +195,7 @@ console.log(store.getState())
 <!-- will return us the state of this application. -->
 ```
 
-TO DISPATCH ACTIONS
+# REDUX (to dispatch actions)
 
 when we dispatch it, it will go to our rooReducer and look for action.type that matches these ones.
 
@@ -203,4 +203,64 @@ when we dispatch it, it will go to our rooReducer and look for action.type that 
 store.dispatch({type: 'INC_COUNTER'})
 <!-- we can also add payload or anything -->
 store.dispatch({type: 'ADD_COUNTER', payload})
+```
+
+# REDUX (to add subscriptions)
+
+It will listen to any updaed inside of state
+usually you set it right after the store is created
+
+```
+store.subscribe(()=>{
+  console.log('[Subscription]', store.getState());
+})
+```
+
+# REDUX official setup
+
+npm install -- save redux react-redux
+
+Usually in index.js we setup the redux
+
+```
+import {createStore} from 'redux'
+import reducer from './store/reducer'
+<!-- we wrap our App in it -->
+import {Provider} from 'react-redux'
+
+const store = createStore(reducer);
+
+<!-- wrap with provider and prop as store for store to use it throughout the app -->
+ReactDOM.render(<Provider store={store}><App/></Provider> ......)
+```
+
+Needs a store folder and inside a file called reducer.js, and inside of that file
+
+```
+const initState = {
+  number:
+}
+
+<!-- reducer, by defaul need to setup something if not defined yet, everytime when store.dispatch({type: "NAME"}) we need to define the logic in rootReducer-->
+
+const rootReducer = (state = initState, action) =>{
+  if(action.type === 'INC_COUNTER'){
+    return {
+      <!-- always get the state first -->
+      ...state
+      <!-- then the things we need to change -->
+      number: state.number + 1
+
+    }
+
+      <!-- or can access the payload by action -->
+      if(action.type === 'ADD_COUNTER){
+        <!-- will display the object we put inside -->
+        console.log( action.payload)
+      }
+  }
+  return state
+}
+
+export default rootReducer;
 ```
