@@ -10,6 +10,7 @@ create-react-app (name)
    4)Statefull (class App extends component), Stateless (const xy = (props)=>{}).
 3. To scope css styles 111, `npm eject`
    6)Passing function in prop <Component functioName = {()=> props.insideOfThisClassFunctionName(can send a prop too)}> and then inside of that component <button onClick={props.functioName}>
+4. Better use concat() insead of push() when updating array in REDUX.
 
 # Chunks
 
@@ -153,7 +154,7 @@ To pass props
 
 # REDUX
 
-There is a central store, a component that wishes to change a state dispatches an action, which reaches a reducer that gets an old state and changes it to the new one in central store. To get an updated version of a state our component can susbsribe to changs. Store can only be made with reducers.
+There is a central store, a component that wishes to change a state dispatches an action, which reaches a reducer that gets an old state and changes it to the new one in central store. To get an updated version of a state our component can susbsribe to changs. Store can only be made with reducers. Can use switch sttements instead of IF (if desired)
 
 To start working
 
@@ -238,15 +239,15 @@ Needs a store folder and inside a file called reducer.js, and inside of that fil
 
 ```
 const initState = {
-  number:
+  number: 0
 }
 
 <!-- reducer, by defaul need to setup something if not defined yet, everytime when store.dispatch({type: "NAME"}) we need to define the logic in rootReducer-->
 
 const rootReducer = (state = initState, action) =>{
-  if(action.type === 'INC_COUNTER'){
+  if(action.type === 'INCREMENT'){
     return {
-      <!-- always get the state first -->
+      <!-- always get the state first, otherwise it removes everything else or sets it to default-->
       ...state
       <!-- then the things we need to change -->
       number: state.number + 1
@@ -263,4 +264,67 @@ const rootReducer = (state = initState, action) =>{
 }
 
 export default rootReducer;
+```
+
+# REDUX access state inside of component
+
+Now that we have redux setup throughout the entire app we need to access it in certain components. So lets say inside of component A we have the following code:
+
+```
+import {connect} from 'react-redux'
+
+...
+(1)to access a property from mapStateToProps we do the following
+console.log(this.props.stateName)
+...
+
+<!-- state we defined here, is our state setup in reducer.js -->
+const mapStateToProps = state =>{
+  return{
+      stateName: state.insideStateProperty
+  };
+}
+<!-- now we pass the mapStateToProps in connect (NOW COME BACK TO (1)-->
+export default connect(mapStateToProps)(ComponentName);
+```
+
+# REDUX access actions inside of component
+
+Quite similar to state
+
+```
+(1)this.props.dispatchName
+
+const mapDispatchToProps = dispatch =>{
+  return{
+    <!-- and that INCREMENT must be defined in our reducer.js file -->
+    dispatchName: () => dispatch({type: "INCREMENT"})
+  }
+}
+
+<!-- if need to access this actions (1) -->
+export default connect(mapStateToProps, mapDispatchToProps)(ComponentName);
+
+P.S if no need to states to be imported could be just `null`
+```
+
+# REDUX pass payload to actions
+
+```
+(1)this.props.dispatchName(whateverYouNeed)
+
+const mapDispatchToProps = dispatch =>{
+  return{
+    <!-- the way to access it (1) -->
+    dispatchName: () => dispatch({type: "INCREMENT", payload})
+  }
+}
+```
+
+Then in our reducer.js file to access the payload
+
+```
+if(action.type === "INCREMENT){
+  console.log(action.payload)
+}
 ```
