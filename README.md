@@ -5,13 +5,11 @@ Cool links
 
 # Quickies
 
-1. this.state.persons.map((person, index)) in this case index will show us the index of each person
-   2)Error boundary to use when an error might happen to a component
-2. Can refactor the code by segragating components like <Persons> but be sure to pass props of states, and functions.
-   4)Statefull (class App extends component), Stateless (const xy = (props)=>{}).
-3. To scope css styles 111, `npm eject`
-   6)Passing function in prop <Component functioName = {()=> props.insideOfThisClassFunctionName(can send a prop too)}> and then inside of that component <button onClick={props.functioName}>
-4. Better use concat() insead of push() when updating array in REDUX.
+- `this.state.persons.map((person, index))` in this case index will show us the index of each person
+- Can refactor the code by segragating components like <Persons> but be sure to pass props of states, and functions. Statefull (class App extends component), Stateless (const xy = (props)=>{}).
+- To scope css styles, `npm eject`
+- Passing function in prop `<Component functioName = {()=> props.insideOfThisClassFunctionName(can send a prop too)}>` and then inside of that component `<button onClick={props.functioName}>`
+- Better use concat() insead of push() when updating array in REDUX.
 
 # Core code sample
 
@@ -152,6 +150,89 @@ To pass props
 <Persons persons={this.state.persons}
                    clicked={this.deletePersonHandler} ></Persons>
 ```
+# AJAX , HTTP requests
+Use axios and set the links there, prefereably in production to use nginx to map the calls to server and load balance it
+Interceptors, can be used for auth headers, tokens etc
+
+https://www.npmjs.com/package/axios
+
+```
+//can be request or response
+//can implement any needed functionality inside of the request
+/can console.log(request) to see what you are working with.
+axios.interceptors.request.use(request=>{
+   
+   
+   
+   
+   return request
+
+},error =>{
+
+   return Promise.reject(error)
+   
+})
+
+
+//if need to remove the interceptor then just need to store it in a variable
+
+var here = axios.interceptors.request.use........
+
+//and to remove
+axios.interceptors.request.eject(here)
+```
+
+
+# Routing
+npm install --save react-router-dom, then in index js `import {BrowserRouter} from react-router-dom`
+
+```
+const app = (
+   <BrowserRouter>
+   <App/>
+   </BrowserRouter>
+)
+```
+and put that in ReactDOM.render instead of `<App/>`
+
+Then in any file we want to include routing usually in navigation or layout
+```
+import {Route} from 'react-router-dom'
+
+inside of render
+
+<Route path = "/home" component={Name of that component to load}>
+
+OR instead of `componentn={}'
+
+<Router path = "home" render={()=>(<NameOfPage  PLUS_CAN_PASS_PROPS={this.state.YOURS}>)}
+
+```
+If we want to access information from previous page that navigated user to current page we should
+add `export default withRouter(component name)` withRouter is imported by from 'react-router-dom'
+with `console.log(props)` we would be able to see all the info.
+
+Programmatically would be `this.props.history.push('/link')`
+or `this.props.history.goBack()` will put u back where u came from and `this.props.history.replace('/link')`
+
+Put querieis in params - 
+```
+const queryParams = []
+for (let i in this.state.YOURS){
+   queryParams.push(encodeURIComponent(i) + '=' encodeURIComponent(this.state.YOURS[i])
+}
+
+const joinedString = queryParams.join('&')
+
+this.props.history.push({
+   pathname:'/link',
+   search: joinedString
+})
+```
+and to retrieve it
+`const query = new URLSearchParams(this.props.location.search)`
+
+
 
 # REDUX
 
