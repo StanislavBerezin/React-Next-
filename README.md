@@ -13,9 +13,9 @@ Cool links
    6)Passing function in prop <Component functioName = {()=> props.insideOfThisClassFunctionName(can send a prop too)}> and then inside of that component <button onClick={props.functioName}>
 4. Better use concat() insead of push() when updating array in REDUX.
 
-# Chunks
+# Core code sample
 
-To display contennt by conditionals
+# To display contennt by conditionals
 
 ```
 <!-- in class -->
@@ -54,7 +54,7 @@ render() {
   }
 ```
 
-Display multiple content by mapping existing set
+# Display multiple content by mapping existing set
 
 ```
   render() {
@@ -92,7 +92,7 @@ Display multiple content by mapping existing set
   }
 ```
 
-Removing a component or list based on its index
+# Removing a component or list based on its index
 
 ```
  deletePersonHandler = (personIndex) =>{
