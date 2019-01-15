@@ -1,6 +1,7 @@
 # Intro to react
+Cool links
+- Animations https://react-spring.surge.sh/
 
-create-react-app (name)
 
 # Quickies
 
