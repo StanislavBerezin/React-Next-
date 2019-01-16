@@ -7,6 +7,7 @@ Cool links
 # Quickies
 
 - <React.Fragment> instead of <Aux>
+- .bind(this, what_to_pass) should be used onClick event and other elements if we want to pass a certain identifier
 - `this.state.persons.map((person, index))` in this case index will show us the index of each person
 - Can refactor the code by segragating components like <Persons> but be sure to pass props of states, and functions. Statefull (class App extends component), Stateless (const xy = (props)=>{}).
 - To scope css styles, `npm eject`
@@ -247,7 +248,9 @@ More of these samples in Hooks folder
 
 - const [value, setValue]= useState("") to hold data and set data
 - useEffect(function to execute) or (()=>{ CODE }, []) when components loads the first time, good for http and fetching.
--
+- const Variable = useContext(Wrapper), something that can be accessed throughout the app if wrapped in the createContext
+
+* useState()
 
 Something that combines class-based(page) component and functional component. To use it `import React, {useState} from 'react'`, its something quite similar to state: in class based. Always use in a root, not inside of if statements or inside of functions.
 
@@ -319,7 +322,9 @@ const todoAddHandler()=>{
 
 ```
 
-ussage of useEffect, it takes 2 arguemtns, the function to execute and a set of values we want it to look at before it executes again, in the example below we want it to look if todoName has changed, or if u want it to run only once when mounted, then just pass an empty array []
+- useEffect
+
+It takes 2 arguemtns, the function to execute and a set of values we want it to look at before it executes again, in the example below we want it to look if todoName has changed, or if u want it to run only once when mounted, then just pass an empty array []. Otherwise it will continue executing infinitively, can be used for fixing UI rendering, when its failing to update something when in fact some new items have been addedd to db.
 
 ```
   useEffect(() => {
@@ -339,39 +344,212 @@ ussage of useEffect, it takes 2 arguemtns, the function to execute and a set of 
 
 ```
 
-When we want to switch between components, lets assume we have tabs that we want to toggle in between.
+- useContext() with React.CreateContext
+- toggling components
+
+(1) When we want to switch between components, lets assume we have tabs that we want to toggle in between.
+
+(2) createContext and useContext() hooks, used to get in data throughout the app if a component has been wrapped in context.
+
+same app.js
 
 ```
+(2)
+import AuthContext from './auth-context';
+
+
 const app = props => {
   const [page, setPage] = useState('auth');
+  const [authStatus, setAuthStatus] = useState(false);
 
 
-//it is changed through .bind(this, newValue)
+(1 - to change)<!-- //it is changed through .bind(this, newValue) -->
+
   const switchPage = pageName => {
     setPage(pageName);
+  };
+
+(2 to set it)//here we change the value
+  const login = () => {
+    setAuthStatus(true);
   };
 
   return (
     <div className="App">
 
-      //when we press on either of them, we pass //new value to switch page, in the first // case its todos and another auth, which //is then rendered after
+   (2 to wrap it) <!-- wrapping effect takes place here in AuthContext.Provider where we pass the value from useState, hence all of the components that are wrapped (Header, Auth, Todo) have access to this context -->
+
+      <AuthContext.Provider value={{ status: authStatus, login: login }}>
+
+
+   (1 setting new value)<!-- //when we press on either of them, we pass //new value to switch page, in the first // case its todos and another auth, which //is then rendered after
 
 
         <Header
           onLoadTodos={switchPage.bind(this, 'todos')}
           onLoadAuth={switchPage.bind(this, 'auth')}
         />
-
-
         <hr />
-        //if page auth then auth if no then todo
+        (1)
         {page === 'auth' ? <Auth /> : <Todo />}
-
+      </AuthContext.Provider>
     </div>
   );
 };
 
-export default app;
+(2 to create it)
+<!--
+// and in auth-context.js -->
+
+import React from 'react';
+
+<!-- here we are creating context in a way of 1 variable to hold boolean and login method, which is then populated when wrapping -->
+
+const authContext = React.createContext({
+    status: false,
+    login: () => {}
+});
+
+export default authContext;
+
+
+(2 to access it troughout wrapped components)
+  const auth = useContext(AuthContext);
+
+  <!-- now auth has properties like
+  auth.status and auth.login can use auth.status for if statements-->
+```
+
+- useReducer()
+
+Its quite similar to setting state, but rather having a consolidate look where you can define most of your functionality in one place and dispatch when needed rather than declaring methods everywhere.
+
+```
+import React, { useReducer } from 'react';
+
+
+<!-- here we make a reduce, so that everytime when a certain tipe is called through dispatch (dispatch({type: 'SET', payload: item_FOR_manipulation})) we can execute methods -->
+
+
+  const todoListReducer = (state, action) => {
+    switch (action.type) {
+      case 'ADD':
+        return state.concat(action.payload);
+      case 'SET':
+        return action.payload;
+      case 'REMOVE':
+        return state.filter(todo => todo.id !== action.payload);
+      default:
+        return state;
+    }
+  };
+
+  <!-- and lets assume inside of use effect -->
+  useEffect(()=>{
+    const here = "here"
+     dispatch({ type: 'SET', payload: here });
+  })
+
+```
+
+- useRef()
+
+To point to precised html element (DOM utilsation) in react
+
+```
+import React, {  useRef } from 'react';
+
+<!-- //creating somethng to hold the rerference -->
+ const todoInputRef = useRef();
+
+<!-- //getting value of that reference -->
+const todoName = todoInputRef.current.value
+
+<!-- //where we set this reference -->
+   <input
+        type="text"
+        placeholder="Todo"
+        ref = {todoInputRef}
+      />
+
+```
+
+-useMemo()
+
+to avoid redundant update
+
+```
+import { useMemo } from 'react';
+
+ {useMemo(
+        () => (
+          <List items={todoList} onClick={todoRemoveHandler} />
+        ),
+        <!-- same as useEffect(), second argument to watch out for -->
+        [todoList]
+      )}
+
+```
+
+- Creating Custom hooks
+
+Following the same pattern as react does by declaring our hooks like useYOURhook
+
+```
+import { useState } from 'react';
+
+export const useFormInput = () => {
+  const [value, setValue] = useState('');
+  const [validity, setValidity] = useState(false);
+
+  const inputChangeHandler = event => {
+    setValue(event.target.value);
+    if (event.target.value.trim() === '') {
+      setValidity(false);
+    } else {
+      setValidity(true);
+    }
+  };
+
+<!-- these are the properties that we will be able to gain access to
+the value represents that there is a string to be stored within this hook, then there is a boolean, and a method -->
+  return { value: value, onChange: inputChangeHandler, validity };
+};
+
+
+<!-- when we call it -->
+
+import { useFormInput } from "../location";
+
+<!-- now todoInput has props like, todoInput.value, todoInput.validity and todo.onChange, hence having no need to declare "useState" and all of the things that were declared in our custom hook, rather it can be just import in stored in variable todoInput -->
+
+const todoInput = useFormInput();
+
+
+
+```
+
+- Styling based on something
+
+```
+  const [inputIsValid, setInputIsValid] = useState(false);
+
+    const inputValidationHandler = event => {
+    if (event.target.value.trim() === "") {
+      setInputIsValid(false);
+    } else {
+      setInputIsValid(true);
+    }
+  };
+
+<!--  -->
+    <input
+
+        style={{
+          backgroundColor: inputIsValid === true ? "transparent" : "red"
+        }}
+      />
+
 ```
 
 # REDUX
