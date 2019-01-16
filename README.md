@@ -1,10 +1,12 @@
 # Intro to react
-Cool links
-- Animations https://react-spring.surge.sh/
 
+Cool links
+
+- Animations https://react-spring.surge.sh/
 
 # Quickies
 
+- <React.Fragment> instead of <Aux>
 - `this.state.persons.map((person, index))` in this case index will show us the index of each person
 - Can refactor the code by segragating components like <Persons> but be sure to pass props of states, and functions. Statefull (class App extends component), Stateless (const xy = (props)=>{}).
 - To scope css styles, `npm eject`
@@ -150,7 +152,9 @@ To pass props
 <Persons persons={this.state.persons}
                    clicked={this.deletePersonHandler} ></Persons>
 ```
+
 # AJAX , HTTP requests
+
 Use axios and set the links there, prefereably in production to use nginx to map the calls to server and load balance it
 Interceptors, can be used for auth headers, tokens etc
 
@@ -161,16 +165,16 @@ https://www.npmjs.com/package/axios
 //can implement any needed functionality inside of the request
 /can console.log(request) to see what you are working with.
 axios.interceptors.request.use(request=>{
-   
-   
-   
-   
+
+
+
+
    return request
 
 },error =>{
 
    return Promise.reject(error)
-   
+
 })
 
 
@@ -182,8 +186,8 @@ var here = axios.interceptors.request.use........
 axios.interceptors.request.eject(here)
 ```
 
-
 # Routing
+
 npm install --save react-router-dom, then in index js `import {BrowserRouter} from react-router-dom`
 
 ```
@@ -193,9 +197,11 @@ const app = (
    </BrowserRouter>
 )
 ```
+
 and put that in ReactDOM.render instead of `<App/>`
 
 Then in any file we want to include routing usually in navigation or layout
+
 ```
 import {Route} from 'react-router-dom'
 
@@ -208,6 +214,7 @@ OR instead of `componentn={}'
 <Router path = "home" render={()=>(<NameOfPage  PLUS_CAN_PASS_PROPS={this.state.YOURS}>)}
 
 ```
+
 If we want to access information from previous page that navigated user to current page we should
 add `export default withRouter(component name)` withRouter is imported by from 'react-router-dom'
 with `console.log(props)` we would be able to see all the info.
@@ -215,7 +222,8 @@ with `console.log(props)` we would be able to see all the info.
 Programmatically would be `this.props.history.push('/link')`
 or `this.props.history.goBack()` will put u back where u came from and `this.props.history.replace('/link')`
 
-Put querieis in params - 
+Put querieis in params -
+
 ```
 const queryParams = []
 for (let i in this.state.YOURS){
@@ -229,10 +237,142 @@ this.props.history.push({
    search: joinedString
 })
 ```
+
 and to retrieve it
 `const query = new URLSearchParams(this.props.location.search)`
 
+# Hooks
 
+More of these samples in Hooks folder
+
+- const [value, setValue]= useState("") to hold data and set data
+- useEffect(function to execute) or (()=>{ CODE }, []) when components loads the first time, good for http and fetching.
+-
+
+Something that combines class-based(page) component and functional component. To use it `import React, {useState} from 'react'`, its something quite similar to state: in class based. Always use in a root, not inside of if statements or inside of functions.
+
+To make it happen inside of the component:
+
+Note this method decouples states into seperate branches
+there is however a way to combine all states into one useState({});
+
+```
+const todo = props => {
+
+  //here we type, and inside we can put an object {}, string "", bool //false, or an array [], or function. Basically telling what we want //to keep in the state, better use array destructre to hold the values. The first one "inputState" is the value itself, and the second is used to set the value of that state. Essentially "useState" has 2 elements inside, value and setting that value method
+
+
+ //work with string
+  const [todoName, setTodoName] = useState('');
+  //work with array
+ const [todoList, setTodoList] = useState([]);
+
+
+ const inputChangeHandler = event =>{
+   //this is how to update that state
+   setTodoName(event.target.value)
+ }
+
+const todoAddHandler()=>{
+  //this is how to add new items to that state
+  setTodoList(todoList.concat(toDoName))
+}
+  return(
+
+      <React.Fragment>
+        <input
+        type="text"
+        onChange={inputChangeHandler}
+        value={todoName}
+        >
+        <button onClick={todoAddHandler}>
+       </React.Fragment>
+  )
+}
+export default todo;
+```
+
+If want to combine all of them, although it becomes far more cluttered
+because they are loosley coupled we have to change both of them everytime we want to change at least one of them, not very beneficial.
+
+```
+const [todoState, setTodoState] = useState({userInput:"", todoList:[]})
+ const inputChangeHandler = event =>{
+
+
+   //because there are multiple objects we have to specify all of them
+   //very inneficient
+
+
+   setTodoState({
+     userInput:event.target.value,
+     todoList: todoState.todoList
+     })
+ }
+
+const todoAddHandler()=>{
+  setTodoState({
+    userInput: todoState.userInput,
+    todoList: todoState.todoList.concat(todoState.userInput)
+    })
+}
+
+```
+
+ussage of useEffect, it takes 2 arguemtns, the function to execute and a set of values we want it to look at before it executes again, in the example below we want it to look if todoName has changed, or if u want it to run only once when mounted, then just pass an empty array []
+
+```
+  useEffect(() => {
+    axios.get('url').then(result => {
+      console.log(result);
+      const todoData = result.data;
+      const todos = [];
+      for (const key in todoData) {
+        todos.push({ id: key, name: todoData[key].name });
+      }
+    setTodoList(todos)
+    });
+  return()=>{
+    console.log("executing as a cleanup")
+  }
+  }, [todoName]);
+
+```
+
+When we want to switch between components, lets assume we have tabs that we want to toggle in between.
+
+```
+const app = props => {
+  const [page, setPage] = useState('auth');
+
+
+//it is changed through .bind(this, newValue)
+  const switchPage = pageName => {
+    setPage(pageName);
+  };
+
+  return (
+    <div className="App">
+
+      //when we press on either of them, we pass //new value to switch page, in the first // case its todos and another auth, which //is then rendered after
+
+
+        <Header
+          onLoadTodos={switchPage.bind(this, 'todos')}
+          onLoadAuth={switchPage.bind(this, 'auth')}
+        />
+
+
+        <hr />
+        //if page auth then auth if no then todo
+        {page === 'auth' ? <Auth /> : <Todo />}
+
+    </div>
+  );
+};
+
+export default app;
+```
 
 # REDUX
 
@@ -410,5 +550,3 @@ if(action.type === "INCREMENT){
   console.log(action.payload)
 }
 ```
-
-
