@@ -1,6 +1,6 @@
 # Intro to react
 
-Cool links
+Usefull links
 
 - Animations https://react-spring.surge.sh/
 
