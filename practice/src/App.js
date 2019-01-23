@@ -1,13 +1,20 @@
 import React, { Component } from "react";
-import Main from "./components/main/main";
+import Main from "./containers/main/main";
+import { Route, Switch } from "react-router-dom";
+import Nav from "./components/nav/nav";
+
 import "./App.css";
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <Main />
-        <h1>Hey</h1>
+        <Nav />
+        <Switch>
+          <Route path="/hook" component={Main} />
+        </Switch>
+
+        <h1>Mother Component(Always here) </h1>
       </div>
     );
   }

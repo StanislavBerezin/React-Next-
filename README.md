@@ -206,15 +206,44 @@ Then in any file we want to include routing usually in navigation or layout
 ```
 import {Route} from 'react-router-dom'
 
-inside of render
+// inside of render
+
+<Nav/> 
+//which is defined below to allow user to navigate through, the <Route> is responsible for displaying
+//the content
 
 <Route path = "/home" component={Name of that component to load}>
 
 OR instead of `componentn={}'
 
-<Router path = "home" render={()=>(<NameOfPage  PLUS_CAN_PASS_PROPS={this.state.YOURS}>)}
+<Router path = "/home" render={()=>(<NameOfPage  PLUS_CAN_PASS_PROPS={this.state.YOURS}>)}
 
 ```
+Once done that, need to create a navigation which can be in a component folder nav.jsx
+```
+import { Link } from "react-router-dom";
+import React from "react";
+
+const Nav = () => (
+  <div>
+    <Link to={"/"} tag="a">
+      Home
+    </Link>
+    <br />
+    <Link to={"/hook"} tag="a">
+      Hook
+    </Link>
+    <br />
+    <Link to={"/another"} tag="a">
+      Another
+    </Link>
+  </div>
+);
+
+export default Nav;
+
+```
+
 
 If we want to access information from previous page that navigated user to current page we should
 add `export default withRouter(component name)` withRouter is imported by from 'react-router-dom'
