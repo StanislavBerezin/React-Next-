@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Main from "./containers/main/main";
 import { Route, Switch } from "react-router-dom";
 import Nav from "./components/nav/nav";
-
 import "./App.css";
 
 class App extends Component {
